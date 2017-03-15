@@ -6,7 +6,7 @@ const babelify =  require('babelify');
 const browserify = require('browserify');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
-const uglify = require('gulp-uglifyjs');
+const uglify = require('gulp-uglify');
 
 
 // Style dependencies
