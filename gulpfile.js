@@ -65,7 +65,7 @@ gulp.task('es6', function() { //transform all code into es2015 format
 	.bundle() //return a stream of code
 	.pipe(source('main.js')) //bundle into a new file name
 	.pipe(buffer()) //put all new code into
-	.pipe(uglify())
+	// .pipe(uglify())
 	.pipe(gulp.dest('dist/public/js/'))
 	.pipe(browserSync.reload({
 		stream: true

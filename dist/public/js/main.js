@@ -1,1 +1,39 @@
-!function e(r,t,n){function u(i,f){if(!t[i]){if(!r[i]){var l="function"==typeof require&&require;if(!f&&l)return l(i,!0);if(o)return o(i,!0);var c=new Error("Cannot find module '"+i+"'");throw c.code="MODULE_NOT_FOUND",c}var s=t[i]={exports:{}};r[i][0].call(s.exports,function(e){var t=r[i][1][e];return u(t?t:e)},s,s.exports,e,r,t,n)}return t[i].exports}for(var o="function"==typeof require&&require,i=0;i<n.length;i++)u(n[i]);return u}({1:[function(e,r,t){"use strict";var n=e("./myModule.js");(0,function(e){return e&&e.__esModule?e:{default:e}}(n).default)("Phil")},{"./myModule.js":2}],2:[function(e,r,t){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),t.default=function(e){console.log("test module is: "+e+".")}},{}]},{},[1]);
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+var _myModule = require("./myModule");
+
+var test = new _myModule.TestClass("testing");
+
+test.testFunction();
+
+},{"./myModule":2}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var TestClass = exports.TestClass = function () {
+	function TestClass(text) {
+		_classCallCheck(this, TestClass);
+
+		var item = this.item = text;
+		console.log(item);
+	}
+
+	_createClass(TestClass, [{
+		key: "testFunction",
+		value: function testFunction() {
+			console.log("test function");
+		}
+	}]);
+
+	return TestClass;
+}();
+
+},{}]},{},[1]);
