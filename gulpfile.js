@@ -1,62 +1,84 @@
-// Gulp Dependencies
-var gulp = require('gulp');
-var rename = require('gulp-rename');
+// Gulp dependencies
+const gulp = require('gulp');
 
 // Build dependencies
-var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var concatCss = require('gulp-concat-css');
-var uglify = require('gulp-uglify');
-var del = require('del');
+const babelify =  require('babelify');
+const browserify = require('browserify');
+const buffer = require('vinyl-buffer');
+const source = require('vinyl-source-stream');
+const uglify = require('gulp-uglifyjs');
+
 
 // Style dependencies
-var sass= require('gulp-sass');
-var cssnano = require('gulp-cssnano');
+const concatCss = require('gulp-concat-css');
+const sass = require('gulp-sass');
 
 // Development dependencies
-var nodemon = require('gulp-nodemon');
-var browserSync = require('browser-sync').create();
-var runSequence = require('run-sequence');
+const browserSync = require('browser-sync').create();
+const nodemon = require('gulp-nodemon');
+const runSequence = require('run-sequence');
 
 // Asset dependencies
 var imagemin = require('gulp-imagemin');
 var cache = require('gulp-cache');
 
-//runs sass, browserSync and watch tasks (for development)
-gulp.task('default', function (callback){
-	runSequence(['sass','browserSync', 'watch'],
-		callback
-)});
-//runs sass, css, images and font tasks (for FTP uploads)
-gulp.task('build', function (callback){
-	runSequence('clean:dist',
-		['sass', 'css', 'scripts', 'html', 'server', 'jsLibs', 'images'],
-		callback
-)});
-
-// task to clean dist folder (delete old files)
-gulp.task('clean:dist', function(){
-	return del.sync('dist');
+gulp.task('default', function(callback){
+	runSequence(['sass', 'es6', 'server', 'html', 'browserSync', 'watch'], callback )
 });
+
+gulp.task('build', function(callback){
+	runSequence(['images', 'fonts'], callback )
+})
+
+gulp.task('watch', function(){
+	gulp.watch('app/public/views/*.pug', ['html']);
+	gulp.watch('app/*.js', ['server']);
+	gulp.watch('app/public/js/**/*.js', ['es6']);
+	gulp.watch('app/public/scss/**/*.scss', ['sass']);
+	gulp.watch('app/*.js', ['es6']);
+});
+
 //task to optimise images + put them in dist folder
 gulp.task('images', function(){
 	return gulp.src('app/public/assets/**/*.+(png|jpg|gif|svg|mp4|ogv|ogg)')
 	.pipe(cache(imagemin({
 		interlaced: true
 	})))
-	.pipe(gulp.dest('dist/assets'))
+	.pipe(gulp.dest('dist/public/assets/'))
 });
-//task to copy fonts to dist folder
+
 gulp.task('fonts', function(){
-	return gulp.src('app/public/fonts/**/*')
-	.pipe(gulp.dest('dist/public/public/fonts'))
+	return gulp.src('app/public/assets/fonts/**/*')
+	.pipe(gulp.dest('dist/public/assets/fonts/'))
 });
+
+gulp.task('server', function(){
+	return gulp.src('app/*.js')
+	.pipe(gulp.dest('dist'));
+});
+
+gulp.task('es6', function() { //transform all code into es2015 format
+	browserify('app/public/js/main.js') //take all code from index.js
+	.transform('babelify', { //transform the code using the es2015 preset
+		presets: ['es2015']
+	})
+	.bundle() //return a stream of code
+	.pipe(source('main.js')) //bundle into a new file name
+	.pipe(buffer()) //put all new code into
+	.pipe(uglify())
+	.pipe(gulp.dest('dist/public/js/'))
+	.pipe(browserSync.reload({
+		stream: true
+	})) //build folder
+});
+
 //task to turn sass into css and then reload browser
 gulp.task('sass', function(){
 	return gulp.src('app/public/scss/**/*.scss')
 	.pipe(sass())
-	.pipe(gulp.dest('app/public/css'))
-	.pipe(browserSync.reload({
+	.pipe(concatCss('styles.min.css'))
+    .pipe(gulp.dest('dist/public/css/'))
+    .pipe(browserSync.reload({
 		stream: true
 	}))
 });
@@ -65,20 +87,29 @@ gulp.task('sass', function(){
 gulp.task('nodemon', function (cb) {
 	var started = false;
 	return nodemon({
-		script: 'app/index.js'
+		script: 'dist/index.js'
 	}).on('start', function () {
 		//avoid nodemon being started multiple times
-		console.log("server started");
-		setTimeout(function(){
-			browserSync.reload();
-		}, 2000);
 		if (!started) {
+			console.log("server started");
 			cb();
 			started = true;
+			setTimeout(function reload(){
+				browserSync.reload({
+					stream: false
+				});
+			}, 4000)
+		}else{
+			console.log("server restarted")
+			setTimeout(function reload(){
+				browserSync.reload({
+					stream: false
+				});
+			}, 2000)
 		}
 	})
 	.on('crash', function() {
-		// console.log('nodemon.crash');
+		console.log('nodemon.crash');
 	})
 	.on('restart', function() {
 		console.log('nodemon.restart');
@@ -91,88 +122,21 @@ gulp.task('nodemon', function (cb) {
 });
 
 gulp.task('browserSync', ['nodemon'], function() {
-	browserSync.init({
-		proxy: "localhost:3000",
+	browserSync.init(null, {
+	    proxy: "localhost:3000",
+	    files: ["public/**/*.*"],
 		port: 4000,
-	});
+		browser: "google chrome",
+    })
 	console.log("Browser sync is working");
 });
 
-gulp.task('distTest', function(cb) {
 
-	browserSync.init({
-		proxy: "localhost:3000",
-		port: 4000,
-	});
-	console.log("Browser sync is working");
-
-	var started = false;
-	return nodemon({
-		script: 'dist/index.js'
-	}).on('start', function () {
-		//avoid nodemon being started multiple times
-		console.log("server started");
-		setTimeout(function(){
-			browserSync.reload();
-		}, 2000);
-		if (!started) {
-			cb();
-			started = true;
-		}
-	})
-	.on('crash', function() {
-		// console.log('nodemon.crash');
-	})
-	.on('restart', function() {
-		console.log('nodemon.restart');
-		// browserSync.reload();
-	})
-	.once('quit', function () {
-		// handle ctrl+c without a big weep
-		process.exit();
-	});
-});
-
-gulp.task('jsLibs', function(){
-	return gulp.src('app/public/js/lib/*.js')
-	// .pipe(concat('libraries.min.js'))
-	// .pipe(uglify())
-	.pipe(gulp.dest('dist/public/js/lib'));
-});
-
-gulp.task('scripts', function(){
-	return gulp.src('app/public/js/*.js')
-	// .pipe(concat('main.min.js'))
-	.pipe(babel({
-		presets: ['es2015']
-	}))
-	// .pipe(uglify())
-	.pipe(gulp.dest('dist/public/js'));
-});
 
 gulp.task('html', function(){
 	return gulp.src('app/public/views/*.pug')
-	.pipe(gulp.dest('dist/public/views'));
-});
-
-gulp.task('server', function(){
-	return gulp.src('app/*.js')
-	.pipe(gulp.dest('dist'));
-});
-
-//task to get all css files referenced in html file and output all new files to dist
-gulp.task('css', function () {
-  return gulp.src('app/public/css/*.css')
-    // .pipe(concatCss('styles.min.css'))
-    .pipe(gulp.dest('dist/public/css'));
-});
-
-//task that 'watches' once browser sync and sass have been run
-//gulp then watches for any change in scss to activate sass task
-//gulp does the same for html and any js change and updates the browser
-gulp.task('watch', ['browserSync', 'sass'], function(){
-	gulp.watch('app/public/scss/**/*.scss', ['sass']);
-	gulp.watch('app/public/views/*.pug', browserSync.reload);
-	gulp.watch('app/public/js/**/*.js', browserSync.reload);
-	gulp.watch('app/*.js', browserSync.reload);
+	.pipe(gulp.dest('dist/public/views/'))
+	.pipe(browserSync.reload({
+		stream: true
+	}));
 });
