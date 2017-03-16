@@ -58,12 +58,12 @@ gulp.task('server', function(){
 });
 
 gulp.task('es6', function() { //transform all code into es2015 format
-	browserify('app/public/js/main.js') //take all code from index.js
+	browserify('app/public/js/bundle.min.js') //take all code from index.js
 	.transform('babelify', { //transform the code using the es2015 preset
 		presets: ['es2015']
 	})
 	.bundle() //return a stream of code
-	.pipe(source('main.js')) //bundle into a new file name
+	.pipe(source('bundle.min.js')) //bundle into a new file name
 	.pipe(buffer()) //put all new code into
 	.pipe(uglify())
 	.pipe(gulp.dest('dist/public/js/'))
