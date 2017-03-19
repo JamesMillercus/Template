@@ -7,7 +7,7 @@ const browserify = require('browserify');
 const buffer = require('vinyl-buffer');
 const source = require('vinyl-source-stream');
 const uglify = require('gulp-uglify');
-
+const concat = require('gulp-concat');
 
 // Style dependencies
 const concatCss = require('gulp-concat-css');
@@ -19,11 +19,11 @@ const nodemon = require('gulp-nodemon');
 const runSequence = require('run-sequence');
 
 // Asset dependencies
-var imagemin = require('gulp-imagemin');
-var cache = require('gulp-cache');
+const imagemin = require('gulp-imagemin');
+const cache = require('gulp-cache');
 
 gulp.task('default', function(callback){
-	runSequence(['sass', 'es6', 'server', 'html', 'browserSync', 'watch'], callback )
+	runSequence(['sass', 'jslibs', 'es6', 'server', 'html', 'browserSync', 'watch'], callback )
 });
 
 gulp.task('build', function(callback){
@@ -35,7 +35,6 @@ gulp.task('watch', function(){
 	gulp.watch('app/*.js', ['server']);
 	gulp.watch('app/public/js/**/*.js', ['es6']);
 	gulp.watch('app/public/scss/**/*.scss', ['sass']);
-	gulp.watch('app/*.js', ['es6']);
 });
 
 //task to optimise images + put them in dist folder
@@ -54,23 +53,33 @@ gulp.task('fonts', function(){
 
 gulp.task('server', function(){
 	return gulp.src('app/*.js')
-	.pipe(gulp.dest('dist'));
+	.pipe(gulp.dest('dist'))
+	.pipe(browserSync.reload({
+		stream: true
+	})); //build folder
 });
 
 gulp.task('es6', function() { //transform all code into es2015 format
 	browserify('app/public/js/bundle.min.js') //take all code from index.js
 	.transform('babelify', { //transform the code using the es2015 preset
-		presets: ['es2015']
+		presets: ['es2015'],
 	})
 	.bundle() //return a stream of code
 	.pipe(source('bundle.min.js')) //bundle into a new file name
 	.pipe(buffer()) //put all new code into
-	.pipe(uglify())
+	// .pipe(uglify()) //minifies code
 	.pipe(gulp.dest('dist/public/js/'))
 	.pipe(browserSync.reload({
 		stream: true
 	})) //build folder
 });
+
+gulp.task('jslibs', function(){
+	return gulp.src('app/public/js/libs/*.js')
+	.pipe(concat('libs.min.js'))
+	// .pipe(uglify()) //minifies code
+	.pipe(gulp.dest('dist/public/js/libs/'));
+})
 
 //task to turn sass into css and then reload browser
 gulp.task('sass', function(){
