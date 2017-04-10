@@ -23,17 +23,18 @@ const imagemin = require('gulp-imagemin');
 const cache = require('gulp-cache');
 
 gulp.task('default', function(callback){
-	runSequence(['sass', 'jslibs', 'es6', 'server', 'html', 'browserSync', 'watch'], callback )
+	runSequence(['sass', 'jslibs', 'es6', 'server', 'html', 'images', 'fonts', 'browserSync', 'watch'], callback )
 });
 
-gulp.task('build', function(callback){
-	runSequence(['images', 'fonts'], callback )
-})
+// gulp.task('build', function(callback){
+// 	runSequence(['images', 'fonts'], callback )
+// })
 
 gulp.task('watch', function(){
 	gulp.watch('app/public/views/*.pug', ['html']);
 	gulp.watch('app/*.js', ['server']);
 	gulp.watch('app/public/js/**/*.js', ['es6']);
+	gulp.watch('app/public/js/libs/*.js', ['jslibs']);
 	gulp.watch('app/public/scss/**/*.scss', ['sass']);
 });
 
