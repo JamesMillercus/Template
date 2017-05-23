@@ -1,10 +1,14 @@
 export class TestClass{
 	constructor(text){
-		let item = this.item = text;
-		console.log(item)
+		this.item = text;
+		this.socket = io();
+		console.log(this.item)
 	}
 
 	testFunction(){
 		console.log("test function");
+		this.socket.on('userSocket', function(val){
+			console.log(val);
+		});
 	}
 }
