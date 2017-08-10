@@ -1,0 +1,25 @@
+version: "2"
+services:
+  dev:
+    build: .
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - .:/usr/src/app
+    command: gulp
+  prod:
+    build: .
+    ports:
+      - "3000:3000"
+    command: node ./dist/index.js
+    
+
+  # to start: docker-compose up dev
+
+
+    # command: node ./dist/index.js
+    # docker stop $(docker ps -a -q)
+    # docker rm $(docker ps -a -q)
+    # docker stop $(docker ps -aq)
+    # docker rm $(docker ps -a -q)
