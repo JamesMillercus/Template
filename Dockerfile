@@ -9,8 +9,8 @@ WORKDIR /usr/src/app
 # Install app dependencies
 COPY package.json /usr/src/app/
 RUN npm install -g gulp
-RUN npm install
-RUN npm rebuild node-sass
+# RUN npm install
+# RUN npm rebuild node-sass --force
 
 # Bundle app source
 COPY . /usr/src/app

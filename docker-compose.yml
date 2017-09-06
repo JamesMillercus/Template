@@ -1,21 +1,19 @@
 version: "2"
 services:
-  dev:
+  web:
     build: .
     ports:
       - "3000:3000"
       - "4000:4000"
     volumes:
       - .:/usr/src/app
+    # dev
     command: gulp
-  prod:
-    build: .
-    ports:
-      - "3000:3000"
-    command: node ./dist/index.js
+    # prod
+    # command: bash -c "npm install && node ./dist/index.js"
     
 
-  # to start: docker-compose up dev
+  # to start: docker-compose up
 
 
     # command: node ./dist/index.js
