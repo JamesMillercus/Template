@@ -1,0 +1,2 @@
+# Define from rancher images
+FROM rancher/server:stable

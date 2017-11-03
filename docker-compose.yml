@@ -1,23 +1,34 @@
 version: "2"
 services:
-  web:
-    build: .
+  nodejs:
+    build: ./web/nodejs
     ports:
       - "3000:3000"
       - "4000:4000"
     volumes:
-      - .:/usr/src/app
-    # dev
+      - "./web/nodejs:/usr/src/app"
     command: gulp
-    # prod
-    # command: bash -c "npm install && node ./dist/index.js"
+  nginx:
+    build: ./web/nginx
+    ports:
+      - "80:80"
+  rancher:
+    build: ./web/rancher
+    ports:
+      - "8080:8080"
+
+
+  # command: bash -c "npm install && node ./dist/index.js"
     
 
   # to start: docker-compose up
 
-
+  # Docker Commands:
     # command: node ./dist/index.js
     # docker stop $(docker ps -a -q)
     # docker rm $(docker ps -a -q)
-    # docker stop $(docker ps -aq)
-    # docker rm $(docker ps -a -q)
+    # docker rmi $(docker images -a -q)
+
+# Example of working host code
+# sudo docker run --rm --privileged -v /var/run/docker.sock:/var/run/docker.sock -v /Users/james.miller/docker/var/lib/rancher:/var/lib/rancher rancher/agent:v1.2.6 http://10.9.126.211:8080/v1/scripts/E018295D1CF4082B7B23:1483142400000:53rurIg4AdrJNHK0MQF1SFILGE
+
