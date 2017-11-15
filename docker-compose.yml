@@ -8,14 +8,14 @@ services:
     volumes:
       - "./web/nodejs:/usr/src/app"
     command: gulp
-  nginx:
-    build: ./web/nginx
-    ports:
-      - "80:80"
-  rancher:
-    build: ./web/rancher
-    ports:
-      - "8080:8080"
+  # nginx:
+  #   build: ./web/nginx
+  #   ports:
+  #     - "80:80"
+  # rancher:
+  #   build: ./web/rancher
+  #   ports:
+  #     - "8080:8080"
 
 
   # command: bash -c "npm install && node ./dist/index.js"
