@@ -9,7 +9,7 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 
 //** SERVE ASSETS **//
-app.use(express.static(__dirname + '/../client/dist/public'));
+app.use(express.static(__dirname + '/../client/build'));
 
 //** SETUP SOCKETS **//
 require('./sockets/setup')(io);

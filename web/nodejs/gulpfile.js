@@ -29,27 +29,27 @@ gulp.task('default', function(callback){
 gulp.task('watch', function(){
 	gulp.watch('host/views/*.pug', ['browserSync']);
 	gulp.watch('host/*.js', ['browserSync']);
-	gulp.watch('client/app/public/js/**/*.js', ['es6']);
-	gulp.watch('client/app/public/js/libs/*.js', ['jslibs']);
-	gulp.watch('client/app/public/scss/**/*.scss', ['sass']);
+	gulp.watch('client/src/js/**/*.js', ['es6']);
+	gulp.watch('client/src/js/libs/*.js', ['jslibs']);
+	gulp.watch('client/src/scss/**/*.scss', ['sass']);
 });
 
 //task to optimise images + put them in dist folder
 gulp.task('images', function(){
-	return gulp.src('client/app/public/assets/**/*.+(png|jpg|gif|svg|mp4|ogv|ogg)')
+	return gulp.src('client/src/assets/**/*.+(png|jpg|gif|svg|mp4|ogv|ogg)')
 	.pipe(cache(imagemin({
 		interlaced: true
 	})))
-	.pipe(gulp.dest('client/dist/public/assets/'))
+	.pipe(gulp.dest('client/build/assets/'))
 });
 
 gulp.task('fonts', function(){
-	return gulp.src('client/app/public/assets/fonts/**/*')
-	.pipe(gulp.dest('client/dist/public/assets/fonts/'))
+	return gulp.src('client/src/assets/fonts/**/*')
+	.pipe(gulp.dest('client/build/assets/fonts/'))
 });
 
 gulp.task('es6', function() { //transform all code into es2015 format
-	browserify('client/app/public/js/bundle.min.js') //take all code from index.js
+	browserify('client/src/js/bundle.min.js') //take all code from index.js
 	.transform('babelify', { //transform the code using the es2015 preset
 		presets: ['es2015'],
 	})
@@ -57,25 +57,25 @@ gulp.task('es6', function() { //transform all code into es2015 format
 	.pipe(source('bundle.min.js')) //bundle into a new file name
 	.pipe(buffer()) //put all new code into
 	// .pipe(uglify()) //minifies code
-	.pipe(gulp.dest('client/dist/public/js/'))
+	.pipe(gulp.dest('client/build/js/'))
 	.pipe(browserSync.reload({
 		stream: true
 	})) //build folder
 });
 
 gulp.task('jslibs', function(){
-	return gulp.src('client/app/public/js/libs/*.js')
+	return gulp.src('client/src/js/libs/*.js')
 	.pipe(concat('libs.min.js'))
 	// .pipe(uglify()) //minifies code
-	.pipe(gulp.dest('client/dist/public/js/libs/'));
+	.pipe(gulp.dest('client/build/js/libs/'));
 })
 
 //task to turn sass into css and then reload browser
 gulp.task('sass', function(){
-	return gulp.src('client/app/public/scss/**/*.scss')
+	return gulp.src('client/src/scss/**/*.scss')
 	.pipe(sass())
 	.pipe(concatCss('styles.min.css'))
-    .pipe(gulp.dest('client/dist/public/css/'))
+    .pipe(gulp.dest('client/build/css/'))
     .pipe(browserSync.reload({
 		stream: true
 	}))
@@ -122,7 +122,7 @@ gulp.task('nodemon', function (cb) {
 gulp.task('browserSync', ['nodemon'], function() {
 	browserSync.init(null, {
 	    proxy: "localhost:3000",
-	    files: ["public/**/*.*"],
+	    files: ["**/*.*"],
 		port: 4000,
 		browser: "google chrome",
     })
