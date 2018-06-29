@@ -1,4 +1,4 @@
-job('Boilerplate') {
+job('Boilerplate-seed') {
     // software configuration management
     scm {
         // jenkins will clone below repo
