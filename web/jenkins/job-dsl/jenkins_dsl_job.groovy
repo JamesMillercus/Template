@@ -28,6 +28,8 @@ job('Boilerplate-seed') {
             forceTag(false)
             createFingerprints(false)
             skipDecorate()
+            buildContext('web/nodejs')
+            dockerfilePath('web/nodejs/jenkins/Dockerfile')
         }
     }
 }
