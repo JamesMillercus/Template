@@ -29,7 +29,7 @@ job('Boilerplate-seed') {
             createFingerprints(false)
             skipDecorate()
             buildContext('./web/nodejs/')
-            dockerfilePath('jenkins/Dockerfile')
+            dockerfilePath('./web/nodejs/jenkins')
         }
     }
 }
