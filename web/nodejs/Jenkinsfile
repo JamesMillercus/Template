@@ -18,7 +18,7 @@ node {
 		// pull this latest docker image
 		myTestContainer.pull();
 		// inside the docker container, run the test script
-		myTestcontainer.inside {
+		myTestContainer.inside {
 			// only install dependencies required for testing
 			// sh 'npm install --only=dev'
 			// run script to start test
