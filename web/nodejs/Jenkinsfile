@@ -6,7 +6,7 @@ node {
 	stage('Preparation') {
 		// git checkout software configuration management
 		checkout scm
-		// get the commit id and store it in .git/commid-id
+		// get the commit id and store it in .git/commit-id
 		sh "git rev-parse --short HEAD > .git/commit-id"
 		// commit id = the contents of the created file (trimming the white space out)
 		commit_id = readFile('./git/commit-id').trim()
