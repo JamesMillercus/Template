@@ -1,0 +1,32 @@
+// node to be built on
+node {
+	// var commit
+	def commit_id
+
+	stage('Preparation') {
+		// git checkout software configuration management
+		checkout scm
+		// get the commit id and store it in .git/commid-id
+		sh "git rev-parse --short HEAD > .git/commit-id"
+		// commit id = the contents of the created file (trimming the white space out)
+		commit_id = readFile('./git/commit-id').trim()
+	}	
+
+	stage('test') {
+		// use nodejs wrapper to execute node commands 
+		nodejs(nodeJSInstallationName: 'nodejs') {
+			// only install dependencies required for testing
+			sh 'npm install -only=dev'
+			// run script to start test
+			sh 'npm test'
+		}
+	}
+
+	stage('docker build/push') {
+		// we want to use the docker registry using the credentials stored in 'dockerhub'
+		docker.withRegistry('https://index.docker.io/v1/', 'dockerhub') {
+			// build & push to selected registry
+			def app = docker.build("simuha999/boilerplate:${commit_id", '.').push()
+		}
+	}
+}
