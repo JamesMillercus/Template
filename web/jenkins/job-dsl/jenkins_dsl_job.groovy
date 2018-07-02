@@ -18,6 +18,7 @@ job('boilerplate') {
         nodejs('nodejs') // this is the name of the NodeJS installation in 
                          // Manage Jenkins -> Configure Tools -> NodeJS Installations -> Name
     }
+    //test
     // define steps that need to be actioned by jenkins
     steps {
         dockerBuildAndPublish {
