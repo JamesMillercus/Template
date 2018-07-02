@@ -16,9 +16,9 @@ node {
 		// use nodejs wrapper to execute node commands 
 		nodejs(nodeJSInstallationName: 'nodejs') {
 			// only install dependencies required for testing
-			sh 'npm install -only=dev'
+			// sh 'npm install -only=dev'
 			// run script to start test
-			sh 'npm test'
+			// sh 'npm test'
 		}
 	}
 
