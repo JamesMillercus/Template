@@ -14,7 +14,7 @@ node {
 
 	stage('test') {
 		// define a container with latest version of node
-		def myTestContainer = docker.image('node:stable')
+		def myTestContainer = docker.image('node:latest')
 		// pull this latest docker image
 		myTestContainer.pull();
 		// inside the docker container, run the test script
