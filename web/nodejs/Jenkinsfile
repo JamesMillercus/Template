@@ -1,4 +1,4 @@
-properties([pipelineTriggers([pollSCM('H * * * *')])])
+properties([pipelineTriggers([cron('H/30 * * * *')])])
 
 // node to be built on
 node {
