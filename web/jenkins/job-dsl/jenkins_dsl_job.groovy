@@ -1,3 +1,4 @@
+// example dsl file, is not required for this stack
 job('boilerplate') {
     // software configuration management
     scm {

@@ -1,3 +1,4 @@
+// only use this if you need to store server ssh keys in github
 node {
 	stage('do something with git') {
 	    // create ssh agent to allow jenkins to access server
