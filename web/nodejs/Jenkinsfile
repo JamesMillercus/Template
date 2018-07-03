@@ -1,4 +1,5 @@
-properties([pipelineTriggers([cron('H/30 * * * *')])])
+// on git push trigger build event
+properties([pipelineTriggers([pollSCM('H * * * *')])])
 
 // node to be built on
 node {
