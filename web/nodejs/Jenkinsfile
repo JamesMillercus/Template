@@ -1,4 +1,3 @@
-// will trigger on git push
 properties([pipelineTriggers([pollSCM('H * * * *')])])
 
 // node to be built on
