@@ -3,6 +3,7 @@ node {
 	    // create ssh agent to allow jenkins to access server
 		sshagent (credentials: ['github-key']) {
 			// get last commid id from respository
+			//test
 			sh 'git ls-remote -h --refs git@github.com:JamesMillercus/Template.git master |awk "{print $1}"'
 		}
 	}
