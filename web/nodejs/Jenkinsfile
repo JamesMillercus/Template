@@ -1,3 +1,7 @@
+properties([pipelineTriggers([pollSCM('H * * * *')])])
+
+// pipelineTriggers([cron('H/30 * * * *')])
+
 // node to be built on
 node {
 	// var commit
